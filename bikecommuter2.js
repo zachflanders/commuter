@@ -12,6 +12,12 @@ AccountsTemplates.addFields([{
 
 if (Meteor.isClient) {
 
+  $( document ).ready(function(){
+    $(".button-collapse").sideNav();
+  });
+
+
+  Meteor.subscribe("activities");
   Accounts.ui.config({
     passwordSignupFields: "USERNAME_ONLY"
   });
@@ -23,6 +29,23 @@ Template.home.helpers({
       return Activities.find({}, {sort: {createdAt: -1}});
     }
   });
+
+Template.feed.helpers({
+    activities: function () {
+        return Activities.find({username: Meteor.user().username}, {sort: {createdAt: -1}});
+    }
+  });
+  Template.showActivity.helpers({
+      length: function () {
+          return numeral(turf.lineDistance((L.polyline(this.route).toGeoJSON()),'miles')).format('0,0.00');
+      }
+    });
+  Template.activity.helpers({
+      length: function () {
+          return numeral(turf.lineDistance((L.polyline(this.route).toGeoJSON()),'miles')).format('0,0.00');
+      }
+    });
+
 
 
 
@@ -36,20 +59,17 @@ Template.home.helpers({
 
         // Get value from form element
         var name = event.target.name.value;
-        console.log(Meteor.user());
+        var route = Session.route;
+
 
         // Insert a task into the collection
-        Activities.insert({
-          name: name,
-          route: Session.route,
-          owner: Meteor.userId(),
-          username: Meteor.user().username,
-          createdAt: new Date() // current time
-        });
+        Meteor.call('addActivity', name, route);
 
         // Clear form
         Session.route="";
         event.target.name.value = "";
+
+
       }
     });
 
@@ -58,18 +78,15 @@ Template.home.helpers({
         event.preventDefault();
         console.log(event.target);
         var name = event.target.name.value;
+        var id = this._id;
+        console.log(id);
         var route = Session.route;
-        Activities.update(this._id, {
-            $set: {
-              name: name,
-              route: route
-            }
+        Meteor.call('editActivity', id, name, route);
 
-          });
           event.target.name.value = "";
         },
       "click .delete": function () {
-        Activities.remove(this._id);
+        Meteor.call('deleteActivity',this._id);
       }
     });
 
@@ -85,6 +102,14 @@ Template.home.helpers({
     Meteor.logout();
     this.render('home');
   });
+  Router.route('/activity/:_id/', function () {
+  var params = this.params;
+  var id = params._id;
+  this.render('showActivity', {
+    data: function () {
+      return Activities.findOne({_id: id});
+    }});
+  });
   Router.route('/activity/:_id/edit', function () {
   var params = this.params;
   var id = params._id;
@@ -93,6 +118,12 @@ Template.home.helpers({
     data: function () {
       return Activities.findOne({_id: id});
     }});
+  });
+  Router.route('/:username/feed', function () {
+    this.render('feed');
+  });
+  Router.route('/:username/dashboard', function () {
+    this.render('dashboard');
   });
 
 
@@ -209,10 +240,55 @@ Template.editMap.rendered = function() {
 
 };
 
+
+
 }
 
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
   });
+  Meteor.publish("activities", function () {
+    return Activities.find();
+  });
 }
+
+Meteor.methods({
+  addActivity: function (name, route) {
+    // Make sure the user is logged in before inserting a task
+    if (! Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+
+    Activities.insert({
+      name: name,
+      route: route,
+      createdAt: new Date(),
+      owner: Meteor.userId(),
+      username: Meteor.user().username
+    });
+  },
+  deleteActivity: function (activityId) {
+    var activity = Activities.findOne(activityId);
+    if (activity.owner !== Meteor.userId()) {
+      // make sure only the owner can delete it
+      throw new Meteor.Error("not-authorized");
+    }
+    Activities.remove(activityId);
+  },
+  editActivity: function(activityId, name, route){
+    var activity = Activities.findOne(activityId);
+    if (activity.owner !== Meteor.userId()) {
+      // make sure only the owner can delete it
+      throw new Meteor.Error("not-authorized");
+    }
+    Activities.update(activityId, {
+        $set: {
+          name: name,
+          route: route
+        }
+
+      });
+    }
+
+});

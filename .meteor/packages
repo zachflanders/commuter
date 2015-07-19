@@ -5,11 +5,11 @@
 # but you can also edit it by hand.
 
 meteor-platform
-autopublish
-insecure
 accounts-ui
 accounts-password
 materialize:materialize
 useraccounts:materialize
 fuatsengul:leaflet
 bdunnette:leaflet-draw
+yauh:turfjs
+numeral:numeral

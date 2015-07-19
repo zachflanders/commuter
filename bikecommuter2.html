@@ -1,6 +1,8 @@
 <head>
   <title>Bike Commuter</title>
   <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
 
 </head>
 
@@ -14,11 +16,23 @@
    <div class="nav-wrapper light-blue darken-2">
      <div class='container'>
      <a href="/" class="brand-logo">Bike Commuter</a>
+     <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
      <ul id="nav-mobile" class="right hide-on-med-and-down">
 
        {{#if currentUser}}
-       <li><a href="activity/add">Add Activity</a></li>
-       <li><a href="/logout">logout</a></li>
+       <li><a href="/{{currentUser.username}}/dashboard">Dashbaord</a></li>
+       <li><a href="/{{currentUser.username}}/feed">Activity Feed</a></li>
+       <li><a href="/activity/add">Add Activity</a></li>
+       <li><a href="/logout">Logout</a></li>
+       {{/if}}
+
+     </ul>
+     <ul class="side-nav" id="mobile-demo">
+       {{#if currentUser}}
+       <li><a href="/{{currentUser.username}}/dashboard">Dashbaord</a></li>
+       <li><a href="/{{currentUser.username}}/feed">Activity Feed</a></li>
+       <li><a href="/activity/add">Add Activity</a></li>
+       <li><a href="/logout">Logout</a></li>
        {{/if}}
 
      </ul>
@@ -31,7 +45,7 @@
   <div class='container'>
   {{>atForm}}
   {{#if currentUser}}
-    <h3>Activity Feed</h3>
+    <h3>Latest Activities</h3>
     {{#each activities}}
     {{>activity}}
     {{/each}}
@@ -45,9 +59,10 @@
     {{>map}}
     <div class='card-content'>
 
-      <span class="card-title grey-text text-darken-4">{{name}}</span><br>
-      {{username}}
-      <p><a href="activity/{{_id}}/edit">Edit Activity</a></p>
+      <a href='/activity/{{_id}}'><span class="card-title grey-text text-darken-4">{{name}}</span></a><br>
+      {{username}}<br>
+      {{length}} miles
+
     </div>
     </div>
 
@@ -82,7 +97,7 @@
           <form class="edit-activity">
             <label for='name'>Edit Name:</label>
             <input type="text" name="name" placeholder="{{name}}" />
-            {{>editMap}}
+            {{>editMap}}<br>
 
             <input class='btn' type="submit" value="Update"> <button class='btn delete red'>Delete</button>
 
@@ -95,10 +110,44 @@
 
 </template>
 
+<template name="showActivity">
+  <div class='container'>
+  <div class="card">
+    <div class='card-content'>
+      <span class="card-title grey-text text-darken-4">{{name}}</span><br>
+      {{username}}
+    </div>
+    {{>map}}
+    <div class='card-content'>
+      {{length}} miles
+      <p><a href="/activity/{{_id}}/edit">Edit Activity</a></p>
+    </div>
+    </div>
+  </div>
+
+
+</template>
+
 <template name='map'>
   <div id='{{_id}}' class='map'></div>
 </template>
 
 <template name='editMap'>
   <div id='{{_id}}' class='map'></div>
+</template>
+
+<template name='feed'>
+  <div class='container'>
+  <h3>{{currentUser.username}}'s Activities</h3>
+  {{#each activities}}
+  {{>activity}}
+  {{/each}}
+</div>
+</template>
+<template name='dashboard'>
+  <div class='container'>
+  <h3>{{currentUser.username}}'s Dashboard</h3>
+  </div>
+
+
 </template>
