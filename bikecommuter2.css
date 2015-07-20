@@ -1,1 +1,7 @@
 .map { height: 400px; }
+.leaflet-top{
+  z-index:0 !important;
+}
+.leaflet-bottom{
+  z-index:0 !important;
+}

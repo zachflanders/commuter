@@ -20,7 +20,7 @@
      <ul id="nav-mobile" class="right hide-on-med-and-down">
 
        {{#if currentUser}}
-       <li><a href="/{{currentUser.username}}/dashboard">Dashbaord</a></li>
+       <li><a href="/{{currentUser.username}}/dashboard">Dashboard</a></li>
        <li><a href="/{{currentUser.username}}/feed">Activity Feed</a></li>
        <li><a href="/activity/add">Add Activity</a></li>
        <li><a href="/logout">Logout</a></li>
@@ -29,7 +29,7 @@
      </ul>
      <ul class="side-nav" id="mobile-demo">
        {{#if currentUser}}
-       <li><a href="/{{currentUser.username}}/dashboard">Dashbaord</a></li>
+       <li><a href="/{{currentUser.username}}/dashboard">Dashboard</a></li>
        <li><a href="/{{currentUser.username}}/feed">Activity Feed</a></li>
        <li><a href="/activity/add">Add Activity</a></li>
        <li><a href="/logout">Logout</a></li>
@@ -147,6 +147,7 @@
 <template name='dashboard'>
   <div class='container'>
   <h3>{{currentUser.username}}'s Dashboard</h3>
+  <div id='dashboard'></div>
   </div>
 
 

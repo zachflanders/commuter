@@ -18,9 +18,7 @@ if (Meteor.isClient) {
 
 
   Meteor.subscribe("activities");
-  Accounts.ui.config({
-    passwordSignupFields: "USERNAME_ONLY"
-  });
+
 
 /*==========================HELPERS==============================*/
 
@@ -45,6 +43,7 @@ Template.feed.helpers({
           return numeral(turf.lineDistance((L.polyline(this.route).toGeoJSON()),'miles')).format('0,0.00');
       }
     });
+
 
 
 
@@ -240,7 +239,24 @@ Template.editMap.rendered = function() {
 
 };
 
-
+Template.dashboard.rendered = function() {
+  var week = moment().subtract(7, 'days');
+  var data = Activities.find({owner: Meteor.userId()}).fetch();
+  var totalLength = 0;
+  for(var prop in data){
+    console.log(data[prop]);
+    console.log(moment(data[prop].createdAt) >= week);
+    if(moment(data[prop].createdAt) >= week){
+      totalLength = totalLength + turf.lineDistance((L.polyline(data[prop].route).toGeoJSON()),'miles');
+    }
+  }
+  $('#dashboard').html(
+    "<div class='card'>"+
+      "<div class='card-content'>"+
+        "<span class='card-title grey-text text-darken-4'>Previous 7 days</span>"+
+        "<br>Total distance: " + numeral(totalLength).format('0,0.00') + "</div></div>"
+  );
+};
 
 }
 
