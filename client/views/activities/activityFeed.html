@@ -1,0 +1,8 @@
+<template name='feed'>
+  <div class='container'>
+  <h3>{{currentUser.username}}'s Activities</h3>
+  {{#each activities}}
+  {{>activity}}
+  {{/each}}
+</div>
+</template>

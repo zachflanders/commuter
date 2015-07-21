@@ -1,0 +1,17 @@
+<template name="showActivity">
+  <div class='container'>
+  <div class="card">
+    <div class='card-content'>
+      <span class="card-title grey-text text-darken-4">{{name}}</span><br>
+      {{username}}
+    </div>
+    {{>map}}
+    <div class='card-content'>
+      {{length}} miles
+      <p><a href="/activity/{{_id}}/edit">Edit Activity</a></p>
+    </div>
+    </div>
+  </div>
+
+
+</template>

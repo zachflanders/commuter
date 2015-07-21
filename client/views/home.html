@@ -1,0 +1,12 @@
+<template name='home'>
+  <div class='container'>
+  {{>atForm}}
+  {{#if currentUser}}
+    <h3>Latest Activities</h3>
+    {{#each activities}}
+    {{>activity}}
+    {{/each}}
+
+  {{/if}}
+</div>
+</template>

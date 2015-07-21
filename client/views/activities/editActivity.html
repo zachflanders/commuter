@@ -1,0 +1,21 @@
+<template name="editActivity">
+  <div class='container'>
+      <h3>Edit Activity</h3>
+      <div class='card'>
+        <div class='card-content'>
+          <span class='card-title grey-text text-darken-4'>{{name}}</span>
+          <form class="edit-activity">
+            <label for='name'>Edit Name:</label>
+            <input type="text" name="name" placeholder="{{name}}" />
+            {{>editMap}}<br>
+
+            <input class='btn' type="submit" value="Update"> <button class='btn delete red'>Delete</button>
+
+          </form>
+        </div>
+
+      </div>
+    </div>
+
+
+</template>
