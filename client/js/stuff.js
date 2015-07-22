@@ -136,3 +136,41 @@ Template.dashboard.rendered = function() {
         "<br>Total distance: " + numeral(totalLength).format('0,0.00') + "</div></div>"
   );
 };
+
+Template.heatmap.rendered = function() {
+
+  function latlngToArray(latlng){
+    var array = [];
+    latlng.forEach(function(entry){
+      array.push([entry.lat, entry.lng]);
+    });
+    return array;
+  };
+
+  var data=this.data;
+
+
+  var id= data._id;
+  var map = L.map(id+'-heatmap');
+
+  L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>'
+  }).addTo(map);
+  var line = L.polyline(data.route);
+  var bounds = line.getBounds();
+  map.fitBounds(bounds);
+
+  var distance = turf.lineDistance(L.polyline(data.route).toGeoJSON(), 'miles');
+  var points = []
+
+  for(var i = 0; i<= distance; i+=0.01){
+    points.push([turf.along(L.polyline(data.route).toGeoJSON(), i, 'miles').geometry.coordinates[1], turf.along(L.polyline(data.route).toGeoJSON(), i, 'miles').geometry.coordinates[0]] );
+  }
+
+  console.log(points, distance);
+
+
+
+  L.heatLayer(points, {radius: 15}).addTo(map);
+
+}

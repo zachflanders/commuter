@@ -19,3 +19,8 @@ Template.feed.helpers({
           return numeral(turf.lineDistance((L.polyline(this.route).toGeoJSON()),'miles')).format('0,0.00');
       }
     });
+  Template.heatmap.helpers({
+    points: function (){
+      return L.polyline(this.route).toGeoJSON();
+    }
+  })
