@@ -9,12 +9,18 @@ Template.addActivity.events({
       var route = Session.route;
 
 
-      // Insert a task into the collection
+
       Meteor.call('addActivity', name, route);
+
+
+
 
       // Clear form
       Session.route="";
       event.target.name.value = "";
+
+
+      //Router.go('/activity/');
 
 
     }
